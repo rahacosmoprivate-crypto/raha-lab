@@ -1,0 +1,61 @@
+---
+import Base from "../../../components/Base.astro";
+import Card from "../../../components/Card.astro";
+import FilterBox from "../../../components/FilterBox.astro";
+import { getCollection } from "astro:content";
+import { isLang, t } from "../../../lib/i18n";
+import { staticLangPaths } from "../../../lib/routes";
+export async function getStaticPaths(){ return staticLangPaths(); }
+
+const lang=Astro.params.lang; if(!isLang(lang)) throw new Error("lang"); const L=t[lang];
+const all=await getCollection("formulations",({data})=>data.lang===lang);
+const q=Astro.url.searchParams;
+const uniq=(arr:any[])=>[...new Set(arr.filter(Boolean))].sort();
+
+const opts={
+  formulationType: uniq(all.map(x=>x.data.formulationType)),
+  applicationArea: uniq(all.map(x=>x.data.applicationArea)),
+  texture: uniq(all.map(x=>x.data.texture)),
+  difficulty: uniq(all.map(x=>x.data.difficulty))
+};
+
+const filtered=all.filter(x=>{
+  const term=(q.get("q")||"").toLowerCase().trim();
+  const hay=[x.data.title,x.data.shortDescription,x.data.formulaCode,...(x.data.keyActives||[])].filter(Boolean).join(" ").toLowerCase();
+  if(term && !hay.includes(term)) return false;
+  for (const k of ["formulationType","applicationArea","texture","difficulty"] as const){
+    const val=(q.get(k)||"").toLowerCase().trim();
+    if(!val) continue;
+    if(String((x.data as any)[k]||"").toLowerCase()!==val) return false;
+  }
+  return true;
+});
+---
+<Base lang={lang} title={`${L.formulations} • ${L.brand}`} active="formulations">
+  <section class="hero" style="padding-top:22px">
+    <div class="container">
+      <div class="shell" style="padding:0">
+        <div class="grid" style="grid-template-columns:1fr; padding:26px">
+          <div>
+            <div class="kicker">FORMULATION LIBRARY</div>
+            <h1 class="h1" style="margin-top:10px">{L.formulations}</h1>
+            <p class="p" style="margin-top:12px;max-width:72ch">Concept formulations to accelerate prototyping, with clear metadata and actives mapping.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container section twoCol">
+    <FilterBox title={L.filters} action={`/${lang}/formulations`} query={q} options={opts} labels={{search:L.search,apply:L.apply,clear:L.clear}} />
+    <section>
+      <div class="muted" style="margin:6px 0 12px">{filtered.length} items</div>
+      <div class="grid3">
+        {filtered.map(f=>{
+          const s=f.id.split("/").pop()?.replace(".md","");
+          return <Card href={`/${lang}/formulations/${s}`} title={f.data.title} text={f.data.shortDescription} image={f.data.coverImage} badges={[f.data.formulationType||"", ...(f.data.keyActives||[]).slice(0,2)].filter(Boolean)} meta={f.data.applicationArea} cta={L.view} />
+        })}
+      </div>
+    </section>
+  </main>
+</Base>

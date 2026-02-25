@@ -1,0 +1,24 @@
+backend:
+  name: github
+  repo: your-org/your-repo
+  branch: main
+media_folder: "public/uploads"
+public_folder: "/uploads"
+collections:
+  - name: "ingredients_en"
+    label: "Ingredients (EN)"
+    folder: "src/content/ingredients/en"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: Title, name: title, widget: string}
+      - {label: Lang, name: lang, widget: hidden, default: en}
+      - {label: Product Code, name: productCode, widget: string, required: false}
+      - {label: INCI Name, name: inciName, widget: string, required: false}
+      - {label: Short Description, name: shortDescription, widget: text, required: false}
+      - {label: Cover, name: coverImage, widget: image, required: false}
+      - {label: Categories, name: categories, widget: list, required: false}
+      - {label: Applications, name: applications, widget: list, required: false}
+      - {label: Functions, name: functions, widget: list, required: false}
+      - {label: Compliance, name: compliance, widget: list, required: false}
+      - {label: Body, name: body, widget: markdown}

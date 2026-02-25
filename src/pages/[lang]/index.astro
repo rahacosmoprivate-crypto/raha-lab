@@ -1,0 +1,96 @@
+---
+import Base from "../../components/Base.astro";
+import Card from "../../components/Card.astro";
+import { getCollection } from "astro:content";
+import { isLang, t } from "../../lib/i18n";
+import { staticLangPaths } from "../../lib/routes";
+export async function getStaticPaths(){ return staticLangPaths(); }
+
+const lang=Astro.params.lang; if(!isLang(lang)) throw new Error("lang"); const L=t[lang];
+const ingredients=(await getCollection("ingredients",({data})=>data.lang===lang)).slice(0,3);
+const formulations=(await getCollection("formulations",({data})=>data.lang===lang)).slice(0,3);
+const news=(await getCollection("news",({data})=>data.lang===lang)).slice(0,3);
+---
+<Base lang={lang} title={`${L.brand} • ${L.meta_title}`} active="home" description={L.meta_desc}>
+  <section class="hero">
+    <div class="container">
+      <div class="shell">
+        <div class="grid">
+          <div>
+            <div class="kicker">BIO-TECH / PERFORMANCE / COMPLIANCE</div>
+            <h1 class="h1" style="margin-top:10px">{L.meta_title}</h1>
+            <p class="p" style="margin-top:12px;max-width:58ch">{L.meta_desc}</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+              <a class="btn" href={`/${lang}/ingredients`}>{L.ingredients}</a>
+              <a class="btn secondary" href={`/${lang}/formulations`}>{L.formulations}</a>
+            </div>
+            <div class="stats">
+              <div class="stat"><b>200+</b><span>Raw materials</span></div>
+              <div class="stat"><b>60+</b><span>Formulation concepts</span></div>
+              <div class="stat"><b>24h</b><span>Technical response SLA</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+              <span class="badge">INCI-ready</span>
+              <span class="badge">EU / GCC</span>
+              <span class="badge">Lab validated</span>
+              <span class="badge">Stability-first</span>
+            </div>
+            <div class="thumb" style="margin:0;aspect-ratio:4/3">
+              <img src="/assets/hero-lab.svg" alt="RAHA LAB" />
+            </div>
+            <p class="muted" style="margin:10px 0 0;line-height:1.6">
+              A clean, credible interface designed for B2B trust: technical depth, rapid discovery, and multilingual UX.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <h2 class="h2">{L.featured} {L.ingredients}</h2>
+        <a class="btn ghost" href={`/${lang}/ingredients`}>{L.view} all</a>
+      </div>
+      <div class="grid3">
+        {ingredients.map(i=>{
+          const s=i.id.split('/').pop()?.replace('.md','');
+          return <Card href={`/${lang}/ingredients/${s}`} title={i.data.title} text={i.data.shortDescription} image={i.data.coverImage} badges={i.data.categories||[]} meta={i.data.inciName} cta={L.view} />
+        })}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <h2 class="h2">{L.featured} {L.formulations}</h2>
+        <a class="btn ghost" href={`/${lang}/formulations`}>{L.view} all</a>
+      </div>
+      <div class="grid3">
+        {formulations.map(f=>{
+          const s=f.id.split('/').pop()?.replace('.md','');
+          return <Card href={`/${lang}/formulations/${s}`} title={f.data.title} text={f.data.shortDescription} image={f.data.coverImage} badges={[f.data.formulationType||'',f.data.texture||''].filter(Boolean)} meta={f.data.applicationArea} cta={L.view} />
+        })}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-bottom:10px">
+    <div class="container">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <h2 class="h2">{L.latest} {L.news}</h2>
+        <a class="btn ghost" href={`/${lang}/news`}>{L.view} all</a>
+      </div>
+      <div class="grid3">
+        {news.map(n=>{
+          const s=n.id.split('/').pop()?.replace('.md','');
+          return <Card href={`/${lang}/news/${s}`} title={n.data.title} text={n.data.excerpt} image={n.data.coverImage} badges={[n.data.postType]} meta={n.data.publishedAt} cta={L.view} />
+        })}
+      </div>
+    </div>
+  </section>
+</Base>

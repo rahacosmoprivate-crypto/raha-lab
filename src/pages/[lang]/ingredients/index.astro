@@ -1,0 +1,70 @@
+---
+import Base from "../../../components/Base.astro";
+import Card from "../../../components/Card.astro";
+import FilterBox from "../../../components/FilterBox.astro";
+import { getCollection } from "astro:content";
+import { isLang, t } from "../../../lib/i18n";
+import { staticLangPaths } from "../../../lib/routes";
+export async function getStaticPaths(){ return staticLangPaths(); }
+
+const lang=Astro.params.lang; if(!isLang(lang)) throw new Error("lang"); const L=t[lang];
+const all=await getCollection("ingredients",({data})=>data.lang===lang);
+const q=Astro.url.searchParams;
+const uniq=(arr:any[])=>[...new Set(arr.filter(Boolean))].sort();
+
+const opts={
+  categories: uniq(all.flatMap(x=>x.data.categories||[])),
+  applications: uniq(all.flatMap(x=>x.data.applications||[])),
+  functions: uniq(all.flatMap(x=>x.data.functions||[])),
+  origin: uniq(all.map(x=>x.data.origin)),
+  form: uniq(all.map(x=>x.data.form)),
+  solubility: uniq(all.map(x=>x.data.solubility)),
+  status: uniq(all.map(x=>x.data.status))
+};
+
+const filtered=all.filter(x=>{
+  const term=(q.get("q")||"").toLowerCase().trim();
+  const hay=[x.data.title,x.data.shortDescription,x.data.inciName,x.data.productCode].filter(Boolean).join(" ").toLowerCase();
+  if(term && !hay.includes(term)) return false;
+
+  for (const k of ["categories","applications","functions","origin","form","solubility","status"] as const){
+    const val=(q.get(k)||"").toLowerCase().trim();
+    if(!val) continue;
+    const d=(x.data as any)[k];
+    if(Array.isArray(d)){
+      if(!d.map((v:string)=>v.toLowerCase()).includes(val)) return false;
+    } else {
+      if(String(d||"").toLowerCase()!==val) return false;
+    }
+  }
+  return true;
+});
+---
+<Base lang={lang} title={`${L.ingredients} • ${L.brand}`} active="ingredients">
+  <section class="hero" style="padding-top:22px">
+    <div class="container">
+      <div class="shell" style="padding:0">
+        <div class="grid" style="grid-template-columns:1fr; padding:26px">
+          <div>
+            <div class="kicker">CATALOGUE</div>
+            <h1 class="h1" style="margin-top:10px">{L.ingredients}</h1>
+            <p class="p" style="margin-top:12px;max-width:70ch">Search, filter, and explore ingredients with structured metadata designed for rapid R&D decisions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container section twoCol">
+    <FilterBox title={L.filters} action={`/${lang}/ingredients`} query={q} options={opts} labels={{search:L.search,apply:L.apply,clear:L.clear}} />
+    <section>
+      <div class="muted" style="margin:6px 0 12px">{filtered.length} items</div>
+      <div class="grid3">
+        {filtered.map(i=>{
+          const s=i.id.split("/").pop()?.replace(".md","");
+          return <Card href={`/${lang}/ingredients/${s}`} title={i.data.title} text={i.data.shortDescription} image={i.data.coverImage} badges={[...(i.data.categories||[]).slice(0,2),...(i.data.functions||[]).slice(0,1)]} meta={i.data.inciName} cta={L.view} />
+        })}
+      </div>
+    </section>
+  </main>
+</Base>

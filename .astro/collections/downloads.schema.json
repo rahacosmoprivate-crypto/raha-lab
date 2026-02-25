@@ -1,0 +1,52 @@
+{
+  "$ref": "#/definitions/downloads",
+  "definitions": {
+    "downloads": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "lang": {
+          "type": "string",
+          "enum": [
+            "en",
+            "fa",
+            "ar"
+          ]
+        },
+        "coverImage": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "seoTitle": {
+          "type": "string"
+        },
+        "seoDescription": {
+          "type": "string"
+        },
+        "fileUrl": {
+          "type": "string"
+        },
+        "fileType": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "lang",
+        "fileUrl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

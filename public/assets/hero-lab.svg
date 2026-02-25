@@ -1,0 +1,17 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='900' height='675' viewBox='0 0 900 675'>
+<defs><linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'><stop stop-color='#0b1f35'/><stop offset='1' stop-color='#2f86d8'/></linearGradient></defs>
+<rect width='900' height='675' rx='26' fill='url(#bg)'/>
+<g fill='none' stroke='rgba(255,255,255,.25)' stroke-width='2'>
+  <path d='M110 520 C210 350, 340 330, 450 420 S710 520, 800 360'/>
+  <path d='M90 300 C200 220, 360 220, 470 300 S720 410, 820 250'/>
+  <circle cx='260' cy='290' r='44'/><circle cx='620' cy='420' r='56'/>
+</g>
+<g>
+  <rect x='120' y='120' width='260' height='150' rx='18' fill='rgba(255,255,255,.10)' stroke='rgba(255,255,255,.18)'/>
+  <rect x='420' y='160' width='360' height='180' rx='18' fill='rgba(255,255,255,.10)' stroke='rgba(255,255,255,.18)'/>
+  <rect x='160' y='310' width='620' height='220' rx='18' fill='rgba(255,255,255,.08)' stroke='rgba(255,255,255,.16)'/>
+</g>
+<text x='160' y='170' fill='white' opacity='.9' font-size='22' font-family='Arial'>Ingredient intelligence</text>
+<text x='450' y='210' fill='white' opacity='.9' font-size='22' font-family='Arial'>Formulation systems</text>
+<text x='180' y='365' fill='white' opacity='.85' font-size='18' font-family='Arial'>Metadata-driven discovery • Stability-first • Compliance-ready</text>
+</svg>

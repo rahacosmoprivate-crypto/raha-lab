@@ -1,0 +1,43 @@
+---
+import Base from "../../../components/Base.astro";
+import Card from "../../../components/Card.astro";
+import { getCollection } from "astro:content";
+import { isLang, t } from "../../../lib/i18n";
+import { staticLangPaths } from "../../../lib/routes";
+export async function getStaticPaths(){ return staticLangPaths(); }
+
+const lang=Astro.params.lang; if(!isLang(lang)) throw new Error("lang"); const L=t[lang];
+const kind=Astro.url.searchParams.get("type");
+let all=await getCollection("news",({data})=>data.lang===lang);
+if(kind) all=all.filter(x=>x.data.postType===kind);
+all=all.sort((a,b)=>b.data.publishedAt.localeCompare(a.data.publishedAt));
+---
+<Base lang={lang} title={`${L.news} • ${L.brand}`} active="news">
+  <section class="hero" style="padding-top:22px">
+    <div class="container">
+      <div class="shell" style="padding:0">
+        <div class="grid" style="grid-template-columns:1fr; padding:26px">
+          <div>
+            <div class="kicker">UPDATES</div>
+            <h1 class="h1" style="margin-top:10px">{L.news}</h1>
+            <p class="p" style="margin-top:12px;max-width:75ch">Product updates, technical events, and market-facing announcements.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container section">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+      <a class="btn ghost" href={`/${lang}/news`}>All</a>
+      <a class="btn ghost" href={`/${lang}/news?type=news`}>News</a>
+      <a class="btn ghost" href={`/${lang}/news?type=event`}>Events</a>
+    </div>
+    <div class="grid3">
+      {all.map(n=>{
+        const s=n.id.split("/").pop()?.replace(".md","");
+        return <Card href={`/${lang}/news/${s}`} title={n.data.title} text={n.data.excerpt} image={n.data.coverImage} badges={[n.data.postType]} meta={n.data.publishedAt} cta={L.view} />
+      })}
+    </div>
+  </main>
+</Base>

@@ -1,0 +1,42 @@
+---
+import Base from "../../components/Base.astro";
+import { getCollection } from "astro:content";
+import { isLang, t } from "../../lib/i18n";
+import { staticLangPaths } from "../../lib/routes";
+export async function getStaticPaths(){ return staticLangPaths(); }
+
+const lang=Astro.params.lang; if(!isLang(lang)) throw new Error("lang"); const L=t[lang];
+const docs=await getCollection("downloads",({data})=>data.lang===lang);
+---
+<Base lang={lang} title={`${L.downloads} • ${L.brand}`} active="downloads">
+  <section class="hero" style="padding-top:22px">
+    <div class="container">
+      <div class="shell" style="padding:0">
+        <div class="grid" style="grid-template-columns:1fr; padding:26px">
+          <div>
+            <div class="kicker">FILES</div>
+            <h1 class="h1" style="margin-top:10px">{L.downloads}</h1>
+            <p class="p" style="margin-top:12px;max-width:75ch">Datasheets, brochures and technical materials for rapid decision making.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container section">
+    <div class="grid3">
+      {docs.map(d => (
+        <div class="card" style="padding:18px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <h3 style="margin:0">{d.data.title}</h3>
+            <span class="badge">{d.data.fileType || "FILE"}</span>
+          </div>
+          <div class="muted" style="margin-top:8px">{d.data.category || "-"}</div>
+          <div style="margin-top:14px">
+            <a class="btn ghost" href={d.data.fileUrl} style="width:100%">Download</a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </main>
+</Base>

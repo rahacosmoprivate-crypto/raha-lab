@@ -1,0 +1,49 @@
+---
+import Base from "../../../components/Base.astro";
+import { getCollection } from "astro:content";
+import { isLang, t } from "../../../lib/i18n";
+import { staticSlugPaths } from "../../../lib/routes";
+export async function getStaticPaths(){ return staticSlugPaths("formulations","slug"); }
+
+const lang=Astro.params.lang; const slug=Astro.params.slug;
+if(!isLang(lang) || !slug) throw new Error("route");
+const item=(await getCollection("formulations",({data,id})=> data.lang===lang && id.endsWith(`/${slug}.md`)))[0];
+if(!item) throw new Error("not found");
+const { Content } = await item.render();
+const L=t[lang];
+---
+<Base lang={lang} title={`${item.data.title} • ${L.formulations}`} active="formulations" description={item.data.seoDescription ?? item.data.shortDescription ?? L.meta_desc}>
+  <section class="hero" style="padding-top:22px">
+    <div class="container">
+      <div class="shell" style="padding:0">
+        <div class="grid" style="grid-template-columns:1fr; padding:26px">
+          <div>
+            <div class="kicker">FORMULATION</div>
+            <h1 class="h1" style="margin-top:10px">{item.data.title}</h1>
+            <p class="p" style="margin-top:12px;max-width:80ch">{item.data.shortDescription}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container section" style="display:grid;grid-template-columns:1.7fr .9fr;gap:16px;align-items:start">
+    <article class="card" style="padding:18px">
+      {item.data.coverImage && <div class="thumb" style="margin-bottom:14px"><img src={item.data.coverImage} alt={item.data.title} /></div>}
+      <Content />
+    </article>
+
+    <aside class="card" style="padding:18px">
+      <div style="display:grid;gap:10px">
+        <div><b>Code:</b> {item.data.formulaCode || "-"}</div>
+        <div><b>Type:</b> {item.data.formulationType || "-"}</div>
+        <div><b>Area:</b> {item.data.applicationArea || "-"}</div>
+        <div><b>Texture:</b> {item.data.texture || "-"}</div>
+        <div><b>Difficulty:</b> {item.data.difficulty || "-"}</div>
+      </div>
+      <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:6px">
+        {(item.data.keyActives||[]).map((x:string)=> <span class="badge">{x}</span>)}
+      </div>
+    </aside>
+  </main>
+</Base>

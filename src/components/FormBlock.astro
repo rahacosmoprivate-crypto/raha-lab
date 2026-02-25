@@ -1,0 +1,18 @@
+---
+const { title, formName="form", fields } = Astro.props;
+---
+<section class="card" style="padding:18px">
+  <h2 class="h2" style="margin-bottom:12px">{title}</h2>
+  <form class="formgrid" method="post" data-netlify="true" name={formName}>
+    <input type="hidden" name="form-name" value={formName} />
+    {fields.map((f:any)=> (
+      <div class={f.full?"full":""}>
+        <label>{f.label}</label>
+        {f.type==="textarea" ? <textarea name={f.name}></textarea>
+          : f.options ? <select name={f.name}><option value="">Select</option>{f.options.map((o:string)=><option value={o}>{o}</option>)}</select>
+          : <input type={f.type ?? "text"} name={f.name} />}
+      </div>
+    ))}
+    <div class="full"><button class="btn" type="submit" style="width:100%">Submit</button></div>
+  </form>
+</section>

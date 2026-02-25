@@ -1,0 +1,54 @@
+{
+  "$ref": "#/definitions/news",
+  "definitions": {
+    "news": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "lang": {
+          "type": "string",
+          "enum": [
+            "en",
+            "fa",
+            "ar"
+          ]
+        },
+        "coverImage": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "seoTitle": {
+          "type": "string"
+        },
+        "seoDescription": {
+          "type": "string"
+        },
+        "postType": {
+          "type": "string",
+          "enum": [
+            "news",
+            "event"
+          ],
+          "default": "news"
+        },
+        "publishedAt": {
+          "type": "string"
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "lang",
+        "publishedAt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

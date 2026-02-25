@@ -1,0 +1,13 @@
+---
+const { href, title, text, image="/assets/placeholder.svg", badges=[], meta="", cta="View" } = Astro.props;
+---
+<article class="card itemCard">
+  <div class="thumb"><img src={image} alt={title} loading="lazy" /></div>
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <h3 style="margin:0;font-size:1.05rem;line-height:1.25">{title}</h3>
+    <a class="btn ghost" href={href} style="padding:8px 10px;border-radius:12px">{cta}</a>
+  </div>
+  {text && <p class="muted" style="margin:8px 0 0;line-height:1.6">{text}</p>}
+  <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">{badges.filter(Boolean).slice(0,6).map((b)=> <span class="badge">{b}</span>)}</div>
+  {meta && <div class="muted" style="margin-top:8px;font-size:.86rem">{meta}</div>}
+</article>

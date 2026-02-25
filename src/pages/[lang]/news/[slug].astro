@@ -1,0 +1,37 @@
+---
+import Base from "../../../components/Base.astro";
+import { getCollection } from "astro:content";
+import { isLang, t } from "../../../lib/i18n";
+import { staticSlugPaths } from "../../../lib/routes";
+export async function getStaticPaths(){ return staticSlugPaths("news","slug"); }
+
+const lang=Astro.params.lang; const slug=Astro.params.slug;
+if(!isLang(lang) || !slug) throw new Error("route");
+const post=(await getCollection("news",({data,id})=> data.lang===lang && id.endsWith(`/${slug}.md`)))[0];
+if(!post) throw new Error("not found");
+const { Content } = await post.render();
+const L=t[lang];
+---
+<Base lang={lang} title={`${post.data.title} • ${L.news}`} active="news" description={post.data.seoDescription ?? post.data.excerpt ?? L.meta_desc}>
+  <section class="hero" style="padding-top:22px">
+    <div class="container">
+      <div class="shell" style="padding:0">
+        <div class="grid" style="grid-template-columns:1fr; padding:26px">
+          <div>
+            <div class="kicker">{post.data.postType.toUpperCase()}</div>
+            <h1 class="h1" style="margin-top:10px">{post.data.title}</h1>
+            <p class="p" style="margin-top:12px;max-width:75ch">{post.data.excerpt}</p>
+            <div class="muted" style="margin-top:10px">{post.data.publishedAt}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container section">
+    <article class="card" style="padding:18px">
+      {post.data.coverImage && <div class="thumb" style="margin-bottom:14px"><img src={post.data.coverImage} alt={post.data.title} /></div>}
+      <Content />
+    </article>
+  </main>
+</Base>

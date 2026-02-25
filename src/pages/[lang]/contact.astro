@@ -1,0 +1,52 @@
+---
+import Base from "../../components/Base.astro";
+import FormBlock from "../../components/FormBlock.astro";
+import { isLang, t } from "../../lib/i18n";
+import { staticLangPaths } from "../../lib/routes";
+export async function getStaticPaths(){ return staticLangPaths(); }
+
+const lang=Astro.params.lang; if(!isLang(lang)) throw new Error("lang");
+const L=t[lang];
+
+const fields=[
+  {name:"name", label: lang==="en" ? "Name" : (lang==="fa" ? "نام" : "الاسم")},
+  {name:"email", label: "Email", type:"email"},
+  {name:"company", label: lang==="en" ? "Company" : (lang==="fa" ? "شرکت" : "الشركة")},
+  {name:"message", label: lang==="en" ? "Message" : (lang==="fa" ? "پیام" : "الرسالة"), type:"textarea", full:true}
+];
+---
+<Base lang={lang} title={`${L.contact} • ${L.brand}`} active="contact">
+  <section class="hero" style="padding-top:22px">
+    <div class="container">
+      <div class="shell" style="padding:0">
+        <div class="grid" style="grid-template-columns:1fr; padding:26px">
+          <div>
+            <div class="kicker">CONTACT</div>
+            <h1 class="h1" style="margin-top:10px">{L.contact}</h1>
+            <p class="p" style="margin-top:12px;max-width:75ch">Tell us what you’re building. Our team will respond with a technical path (actives, dosage, stability, compliance).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container section grid2">
+    <FormBlock title={L.contact} formName="contact" fields={fields} />
+    <div class="card" style="padding:18px">
+      <h2 class="h2">RAHA LAB</h2>
+      <p class="muted" style="margin-top:0;line-height:1.7">
+        Technical support • ingredient selection • prototype validation • dossier preparation.
+      </p>
+      <div style="display:grid;gap:10px;margin-top:14px">
+        <div><b>Email:</b> info@rahalab.example</div>
+        <div><b>Phone:</b> +98 21 0000 0000</div>
+        <div><b>Office:</b> Tehran • UAE</div>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <span class="badge">24h response</span>
+        <span class="badge">NDA-friendly</span>
+        <span class="badge">Stability-first</span>
+      </div>
+    </div>
+  </main>
+</Base>

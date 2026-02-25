@@ -1,0 +1,91 @@
+{
+  "$ref": "#/definitions/ingredients",
+  "definitions": {
+    "ingredients": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "lang": {
+          "type": "string",
+          "enum": [
+            "en",
+            "fa",
+            "ar"
+          ]
+        },
+        "coverImage": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "seoTitle": {
+          "type": "string"
+        },
+        "seoDescription": {
+          "type": "string"
+        },
+        "productCode": {
+          "type": "string"
+        },
+        "inciName": {
+          "type": "string"
+        },
+        "shortDescription": {
+          "type": "string"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "applications": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "functions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "origin": {
+          "type": "string"
+        },
+        "form": {
+          "type": "string"
+        },
+        "solubility": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "compliance": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "lang"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,83 @@
+---
+import "../styles/global.css";
+import { dir, t, swapLang, type Lang } from "../lib/i18n";
+const { lang, title, active="" , description } = Astro.props as { lang:Lang; title:string; active?:string; description?:string };
+const L = t[lang];
+const desc = description ?? L.meta_desc;
+---
+<html lang={lang} dir={dir(lang)}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={desc} />
+  <meta name="theme-color" content="#0d2a47" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="container row">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div class="name">{L.brand}</div>
+          <div class="tag">{L.tagline}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <a class="btn secondary" href={`/${lang}/download-area`}>{L.cta_catalogue}</a>
+        <a class="btn" href={`/${lang}/contact`}>{L.cta_contact}</a>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="container navrow">
+      <nav class="nav" aria-label="Primary">
+        <a class={active==="home"?"active":""} href={`/${lang}/`}>{L.home}</a>
+        <a class={active==="ingredients"?"active":""} href={`/${lang}/ingredients`}>{L.ingredients}</a>
+        <a class={active==="formulations"?"active":""} href={`/${lang}/formulations`}>{L.formulations}</a>
+        <a class={active==="news"?"active":""} href={`/${lang}/news`}>{L.news}</a>
+        <a class={active==="downloads"?"active":""} href={`/${lang}/download-area`}>{L.downloads}</a>
+        <a class={active==="contact"?"active":""} href={`/${lang}/contact`}>{L.contact}</a>
+      </nav>
+      <div class="langs" aria-label="Language switcher">
+        <a class={lang==="en"?"on":""} href={swapLang(Astro.url.pathname,"en")}>EN</a>
+        <a class={lang==="fa"?"on":""} href={swapLang(Astro.url.pathname,"fa")}>FA</a>
+        <a class={lang==="ar"?"on":""} href={swapLang(Astro.url.pathname,"ar")}>AR</a>
+      </div>
+    </div>
+  </header>
+
+  <slot />
+
+  <footer>
+    <div class="container inner">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div class="logo" aria-hidden="true"></div>
+          <div style="font-weight:900">{L.brand}</div>
+        </div>
+        <div class="small">{L.tagline}</div>
+        <div class="small" style="margin-top:10px">© {new Date().getFullYear()} {L.brand}. All rights reserved.</div>
+      </div>
+      <div>
+        <div style="font-weight:800;margin-bottom:10px">{L.explore}</div>
+        <div class="small" style="display:grid;gap:6px">
+          <a href={`/${lang}/ingredients`}>{L.ingredients}</a>
+          <a href={`/${lang}/formulations`}>{L.formulations}</a>
+          <a href={`/${lang}/news`}>{L.news}</a>
+          <a href={`/${lang}/download-area`}>{L.downloads}</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:800;margin-bottom:10px">{L.contact}</div>
+        <div class="small" style="display:grid;gap:6px">
+          <span>info@rahalab.example</span>
+          <span>+98 21 0000 0000</span>
+          <span>Tehran • UAE • GCC</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
